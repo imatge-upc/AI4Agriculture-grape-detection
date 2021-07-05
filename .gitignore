@@ -1,8 +1,7 @@
-runs
-data/
-checkpoints
+/runs
+/checkpoints
 __pycache__
-logs
+/logs
 .vscode
 keys.json
 .ipynb_checkpoints
