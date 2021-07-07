@@ -109,5 +109,30 @@ The semantic segmentation neural network is a Residual U-Net. Also extracted fro
 ## Analysis
 Notebooks show some of the analysis performed during the project, even though memory issues did not let us upload the whole analysis (images were too big).
 
+## Visualization
+The code uses wanddb to log and visualize results. It is necessary to set up a wanddb account. Then, create a project called AI4Agriculture in the wandb web site. Now, you have to get an API KEY at:
+https://wandb.ai/authorize
+
+Now, create a JSON file with your API KEY at the base folder of this repository: 
+```
+$python
+
+>>> keys = {}
+>>> keys['wandb_key']='YOUR KEY'
+>>> with open('keys.json', 'wb') as fh: json.dump(keys,fh)
+>>>quit()
+```
+
+Make sure no one can read this file:
+```
+$chmod 600 keys.json
+```
+Edit src/dl_template.py and put your wandb user name in the entity field:
+
+```
+        self.wandb_run = wandb.init(name=self.run_name, project="AI4Agriculture", entity='YOUR_WANDB_USERNAME', config=self.opt)
+```
+
+
 ## Aknowledgements
 A big thanks to [LIVIA](https://github.com/LIVIAETS) to make the code used in their paper [Bounding boxes for weakly supervised segmentation: Global constraints get close to full supervision](http://proceedings.mlr.press/v121/kervadec20a.html) open source.
