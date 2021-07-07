@@ -1,7 +1,7 @@
 #!/bin/bash 
 python3 -u train_unet.py \
-    --version $2 \
-    --model $1 \
+    --version $1 \
+    --model ResidualUNet \
     --checkpoints_dir ./checkpoints \
     --nepochs 400 \
     --display_freq 1000 \

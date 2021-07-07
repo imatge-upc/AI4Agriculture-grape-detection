@@ -1,7 +1,7 @@
 #!/bin/bash 
-python3 -u train.py \
-    --version $2 \
-    --model $1 \
+python -u train_faster.py \
+    --version $1 \
+    --model fasterRCNN \
     --checkpoints_dir ./checkpoints \
     --labels_dir ./data/all_labels \
     --images_dir ./data/complete_dataset \
@@ -24,7 +24,7 @@ python3 -u train.py \
     --transform_min_size 2000 \
     --transform_max_size 2500 \
     --validate_train_split \
+    --custom_anchor_widths \
+    --backbone_return_layers 1,2,3 \
     # --partially_pretrained
     #--pretrained
-     --custom_anchor_widths \
-     --backbone_return_layers 1,2,3 \
