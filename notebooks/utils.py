@@ -14,6 +14,31 @@ from src.metrics.recall_precision_ap import recall_precision_ap
 from PIL import Image
 from scipy.sparse import csr_matrix
 
+import pydensecrf.densecrf as dcrf
+
+def crf_post_process(img, probs, H: int, W: int) -> None:
+    K = 2 # Number of classes
+    #assert img.shape == (H, W, 3), "wrong image shape"
+    #assert probs.shape == (K, H, W), "wrong probs shape"
+
+    inf_neglogp = (-probs.log()).cpu().numpy()
+    final_np = np.zeros((K, H, W))
+
+    d = dcrf.DenseCRF2D(W, H, K)
+
+    inf_neglogp_flat: np.ndarray = inf_neglogp.reshape((K, -1))
+    d.setUnaryEnergy(inf_neglogp_flat)
+
+    d.addPairwiseGaussian(sxy=1, compat=3)
+
+    # im = np.ascontiguousarray(np.rollaxis(uintimage, 0, 3), dtype=np.uint8)
+    img=np.ascontiguousarray(img)
+    d.addPairwiseBilateral(sxy=10, srgb=20, rgbim=img, compat=10)
+
+    Q = d.inference(5)
+
+    return np.array(Q).reshape(K, H, W)
+
 def get_metrics_per_threshold(results, target, score_threshold, get_data=False):
     final_results = [{
                         **res,
@@ -112,6 +137,8 @@ def get_unet_masks(trainer, image_ids=None, loader=None):
         target_dd[0]["masks"]= torch.zeros((1,*full_im_shape))
         target_dd[0]["area"]= torch.tensor([0])
         target_dd[0]["labels"]= torch.tensor([0])
+
+        # Split image, apply a forward pass to each subimage
         for data_d, target_d in trainer.custom_collate([[data_dd, target_dd]]):
             data, target = trainer.transform_data(data_d, target_d)
             with torch.no_grad():
@@ -127,7 +154,9 @@ def get_unet_masks(trainer, image_ids=None, loader=None):
         mask_probs_crf[1] = full_mask_probs
         image = loader.dataset.__getitem__(image_id)["image"]
         image = np.ascontiguousarray((image*255).type(torch.uint8).cpu().numpy())
-        crf_probs = np.array([1,2])#crf_post_process(image, mask_probs_crf, *image.shape[:-1])[1]
+        # crf_probs = np.array([1,2])#crf_post_process(image, mask_probs_crf, *image.shape[:-1])[1] 
+        crf_probs = crf_post_process(image, mask_probs_crf, *image.shape[:-1])[1] # JRMR
+
         yield {
             "image_id": image_id,
             "unet_mask_0,9": csr_matrix((full_mask_probs.cpu().numpy() > 0.9).astype(np.byte)),
