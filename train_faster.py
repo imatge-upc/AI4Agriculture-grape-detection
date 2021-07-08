@@ -12,14 +12,14 @@ class FasterHandler(DLTemplate):
     
     def forward(self, model, data, target=None):
         if self.opt.phase == "train":
-            assert target is not None
+            assert target is not None            
             return model(data, target)
         return model(data)
     
     def transform_data(self, data, target=None):
         data   = [d.permute(2, 0, 1).to(self.device) for d in data]
         if target is not None:
-            target = [{key : elem.to(self.device) if type(key) == torch.Tensor else elem for key, elem in t.items()} for t in target]
+            target = [{key : elem.to(self.device) if type(elem) == torch.Tensor else elem for key, elem in t.items()} for t in target]
             return data, target
         return data
 
