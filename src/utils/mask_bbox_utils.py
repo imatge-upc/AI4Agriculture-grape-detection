@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Functions by Pau Marquez, UPC, 2021
 # File & small mods. by Ramon Morros, UPC, 2021
@@ -93,8 +94,8 @@ def get_all_faster_bboxes(trainer,loader):
 def get_bbox_from_blob(blob):
     assert blob.dtype == np.bool
     rows = np.any(blob, axis=0)
-    cols  = np.any(blob, axis=1)
-    rmin, rmax  = np.where(rows)[0][[0, -1]]
+    cols = np.any(blob, axis=1)
+    rmin, rmax = np.where(rows)[0][[0, -1]]
     cmin, cmax = np.where(cols)[0][[0, -1]]
     bbox = (rmin, cmin, rmax, cmax)
     return bbox
@@ -215,7 +216,7 @@ def extract_faster_inferences(faster_trainer, out_dir):
 
 def get_unmatched_boxes(trainer, max_batches=None, find_gt_boxes=False):
 
-    assert trainer.opt.step_batch_size == 1 # Forward only processes one image
+    assert trainer.opt.step_batch_size == 1 #Â Forward only processes one image
     not_matched = {}
     
     for i, (data_d, target_d) in enumerate(trainer.custom_collate(trainer.val_loaders[0][1])):

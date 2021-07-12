@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 #
 # Functions by Pau Marquez, UPC, 2021
-# File & small mods. by Ramon Morros, UPC, 2021
+# File and small mods. by Ramon Morros, UPC, 2021
 #
 
 from matplotlib import pyplot as plt
@@ -12,8 +13,8 @@ import numpy as np
 from itertools import chain
 
 
-from .file_utils    import get_unet_mask_pkl
-from .mask_bbox_utils import  get_faster_bboxes
+from .file_utils      import get_unet_mask_pkl
+from .mask_bbox_utils import get_faster_bboxes
 
 
 def display_image_w_bbox(im, bboxes, annotators = None, colors_annotators = ['blue','red','pink','brown','black','grey', 'white', 'yellow']):    

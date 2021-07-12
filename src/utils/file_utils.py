@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Functions by Pau Marquez, UPC, 2021
 # File & small mods. by Ramon Morros, UPC, 2021
@@ -8,8 +9,8 @@ import torch
 import os
 import numpy as np
 import xmltodict
-from .mask_bbox_utils import  get_bboxes_from_mask, crf_post_process
 import pandas as pd
+from .mask_bbox_utils import  get_bboxes_from_mask, crf_post_process
 
     
 def get_unet_mask_pkl (image_id, results_dir, crf=True, min_area=100):
