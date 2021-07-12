@@ -40,7 +40,7 @@ def apply_nms(results, nms_threshold):
     nms_idx = [torch.ops.torchvision.nms(r["boxes"], r["scores"], nms_threshold) for r in results]
     results_nms = [{
         **res,
-        "boxes": res['boxes'][nms_idx[i]],
+        "boxes":  res['boxes'][nms_idx[i]],
         "labels": res['labels'][nms_idx[i]],
         "scores": res['scores'][nms_idx[i]]
     } for i, res in enumerate(results)]
@@ -119,7 +119,7 @@ def get_matching_bboxes(gt_boxes, pred_boxes, lower_iou_thresh=0.0, upper_iou_th
     return gt_boxes[unmatched_idxs] if find_gt_boxes else pred_boxes[unmatched_idxs]
 
 
-    # EXTRACT FASTER RCNN INFERENCES TO JSON
+# EXTRACT FASTER RCNN INFERENCES TO JSON
 def extract_faster_inferences(faster_trainer, out_dir):
     train_loader = faster_trainer.get_data_loader(faster_trainer.opt, 'train')
     train_res    = get_all_faster_bboxes(faster_trainer, train_loader)
