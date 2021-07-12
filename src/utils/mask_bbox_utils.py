@@ -111,6 +111,8 @@ def get_bboxes_from_mask(binary_mask, min_area=0):
 
 def add_mask(mask, boxes, fill_value=1):
     for box in boxes:
+        if len(box) == 5:
+            box = box[1:]
         mask[int(box[1]):int(box[3]), int(box[0]):int(box[2])] = fill_value
     return mask
 
