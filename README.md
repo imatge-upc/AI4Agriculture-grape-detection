@@ -1,4 +1,5 @@
 # Object Detection and Weakly SupervisedSemantic Segmentation for Grape Detection
+## By Pau Márquez Julbe
 
 This project contains the source code to train, evaluate and analyse the object detection and semantic segmentation algorithms built during the final thesis of my bachelor's degree on [Data Science and Engineering at UPC](https://dse.upc.edu/en). This project has been carried out within the [_AI4Agriculture_](https://www.ai4eu.eu/ai4agriculture) pilot.
 
