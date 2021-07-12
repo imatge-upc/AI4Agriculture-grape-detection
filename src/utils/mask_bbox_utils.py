@@ -112,7 +112,7 @@ def get_bboxes_from_mask(binary_mask, min_area=0):
 def add_mask(mask, boxes, fill_value=1):
     for box in boxes:
         mask[int(box[1]):int(box[3]), int(box[0]):int(box[2])] = fill_value
-
+    return mask
 
 def get_masks_from_boxes(results_boxes, target_boxes):
     all_boxes = np.concatenate([results_boxes, target_boxes])
@@ -121,8 +121,8 @@ def get_masks_from_boxes(results_boxes, target_boxes):
 
     pred_mask   = np.zeros((height, width))
     target_mask = np.zeros((height, width))
-    add_mask(pred_mask,   results_boxes)
-    add_mask(target_mask, target_boxes)
+    pred_mask   = add_mask(pred_mask,   results_boxes)
+    target_mask = add_mask(target_mask, target_boxes)
 
     return pred_mask, target_mask
 
@@ -144,7 +144,7 @@ def get_mask(image, boxes):
     #image = item["image"]
     #boxes = item["target"]["boxes"]
     mask = np.zeros(image.shape[:-1])
-    add_mask(mask, boxes, fill_value=1)
+    mask = add_mask(mask, boxes, fill_value=1)
     return mask
         
 # use get_matching_boxes() instead
