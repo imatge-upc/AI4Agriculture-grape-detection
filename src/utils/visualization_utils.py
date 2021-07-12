@@ -16,7 +16,21 @@ from .file_utils    import get_unet_mask_pkl
 from .mask_bbox_utils import  get_faster_bboxes
 
 
-
+def display_image_w_bbox(im, bboxes, annotators = None, colors_annotators = ['blue','red','pink','brown','black','grey', 'white', 'yellow']):    
+    if annotators is None:
+        annotators = bboxes['annotator'].unique()
+        
+    fig, ax = plt.subplots(figsize=(20,30))
+    ax.imshow(im)
+    for bbox in bboxes[bboxes['annotator'].isin(annotators)].values:
+        annotator = bbox[0]
+        bbox      = bbox[1:]
+        rect      = patches.Rectangle((bbox[0], bbox[1]), bbox[2]-bbox[0], bbox[3]-bbox[1], linewidth=1, edgecolor=colors_annotators[annotator], facecolor='none')
+        
+        ax.add_patch(rect)
+    plt.title(f'(w, h) = ()')
+    fig.show()
+    
 def create_masked_plot(image, mask, boxes):
     fig, ax = plt.subplots(figsize=(10,15))
     
