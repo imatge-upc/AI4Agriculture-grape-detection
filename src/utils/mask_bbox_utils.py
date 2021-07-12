@@ -94,11 +94,13 @@ def get_mask(image, boxes):
     add_mask(mask, boxes, fill_value=1)
     return mask
         
-
-def get_wrong_bboxes(gt_boxes, pred_boxes, lower_iou_thresh=0.0, upper_iou_thresh=1.0):
-    all_ious = box_iou(gt_boxes, pred_boxes)
-    idxs = [i for i, ious in enumerate(all_ious) if (ious.max() < upper_iou_thresh) & (ious.max() > lower_iou_thresh)]
-    return gt_boxes[idxs]
+# use get_matching_boxes() instead
+def get_wrong_bboxes(gt, pred, lower_iou_thresh=0.0, upper_iou_thresh=1.0):
+    all_ious = box_iou(gt['boxes'], pred['boxes'])
+    not_matched_idxs    = [i for i, ious in enumerate(all_ious) if ious.max() < lower_iou_thresh]
+    almost_matched_idxs = [i for i, ious in enumerate(all_ious) if (ious.max() >= lower_iou_thresh) & (ious.max() < upper_iou_thresh)]
+    matched_idxs        = [i for i, ious in enumerate(all_ious) if ious.max() >= upper_iou_thresh]
+    return gt['boxes'][not_matched_idxs], gt['boxes'][almost_matched_idxs], gt['boxes'][matched_idxs]
 
 
 def get_matching_bboxes(gt_boxes, pred_boxes, lower_iou_thresh=0.0, upper_iou_thresh=1.0, find_gt_boxes=True):
