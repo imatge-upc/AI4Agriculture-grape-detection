@@ -153,3 +153,32 @@ def extract_faster_inferences(faster_trainer, out_dir):
 
     with open(out_dir, "w") as fd:
         json.dump(parsed_res, fd)
+
+
+def get_unmatched_boxes(trainer, max_batches=None, find_gt_boxes=False):
+
+    assert trainer.opt.step_batch_size == 1 # Forward only processes one image
+    not_matched = {}
+    
+    for i, (data_d, target_d) in enumerate(trainer.custom_collate(trainer.val_loaders[0][1])):
+        if max_batches and i > max_batches:
+            break
+
+        data, target = trainer.transform_data(data_d, target_d)
+
+        with torch.no_grad():
+            res = trainer.forward(trainer.model, data, target)
+
+        if trainer.opt.model == "ResidualUNet":
+            rgb_image = (unorm(data[0].permute((1,2,0)))*255).type(torch.uint8).cpu().numpy()
+            crf_res   = crf_post_process(np.ascontiguousarray(rgb_image), res[0], *rgb_image.shape[:2])
+            mask      = crf_res.transpose((1,2,0))[:,:,1] > 0.9
+            bboxes    = torch.tensor(get_bboxes_from_mask(mask), device=trainer.device)
+        else:
+            bboxes    = res[0]["boxes"]
+            
+        not_matched = get_matching_bboxes(
+            target[0]["boxes"], bboxes, lower_iou_thresh=0.0, upper_iou_thresh=0.0, find_gt_boxes=find_gt_boxes
+        )
+        not_matched[target[0]["image_id_str"]] = not_matched_curr.cpu().numpy().copy()
+    return not_matched
