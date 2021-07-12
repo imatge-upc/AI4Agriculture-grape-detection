@@ -14,7 +14,6 @@ import numpy as np
 from .file_utils    import get_unet_mask_pkl
 from .mask_bbox_utils import  get_faster_bboxes
 
-import get_item from ?????
 
 
 def create_masked_plot(image, mask, boxes):
