@@ -9,6 +9,7 @@ from matplotlib.colors import colorConverter
 import matplotlib as mpl
 import torch
 import numpy as np
+from itertools import chain
 
 
 from .file_utils    import get_unet_mask_pkl
@@ -50,7 +51,7 @@ def general_plot (image_id, results_dir, faster_trainer=None, title="", loader=N
     data, target = get_item(loader, image_id)
 
     mask, unet_boxes  = get_unet_mask_pkl(image_id, results_dir)
-    unet_boxes = torch.tensor(unet_boxes)
+    unet_boxes        = torch.tensor(unet_boxes)
 
     gt_boxes    = target[0]["boxes"]
 
