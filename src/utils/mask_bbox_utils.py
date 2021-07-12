@@ -11,6 +11,7 @@ from torchvision.ops import box_iou
 import numpy as np
 from skimage import measure
 import pydensecrf.densecrf as dcrf
+from scipy.stats import hmean
 
 
 def bbox_intersect(a, b):
@@ -111,7 +112,7 @@ def get_bboxes_from_mask(binary_mask, min_area=0):
 
 def add_mask(mask, boxes, fill_value=1):
     for box in boxes:
-        if len(box) == 5:
+        if len(box) == 5: # First element is the image id. remove it
             box = box[1:]
         mask[int(box[1]):int(box[3]), int(box[0]):int(box[2])] = fill_value
     return mask
