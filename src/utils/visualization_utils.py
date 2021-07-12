@@ -25,7 +25,8 @@ def display_image_w_bbox(im, bboxes, annotators = None, colors_annotators = ['bl
     ax.imshow(im)
     for bbox in bboxes[bboxes['annotator'].isin(annotators)].values:
         annotator = bbox[0]
-        if len(bbox) == 5:
+        print (bbox)
+        if len(bbox) > 4:
             bbox = bbox[1:]
         rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2]-bbox[0], bbox[3]-bbox[1], linewidth=1, edgecolor=colors_annotators[annotator], facecolor='none')
         
