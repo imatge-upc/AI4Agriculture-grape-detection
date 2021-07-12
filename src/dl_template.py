@@ -57,12 +57,15 @@ class DLTemplate:
     
     def get_data_loader(self, opt, split, purpose=None, dataset_name=None):
         if purpose is None:
-            purpose=split
-        new_opt = deepcopy(opt)
-        new_opt.phase = split
+            purpose = split
+            
+        new_opt         = deepcopy(opt)
+        new_opt.phase   = split
         new_opt.purpose = purpose
+
         if dataset_name:
             new_opt.dataset = dataset_name
+
         loader = CreateDataLoader(new_opt)
         return loader
 
@@ -184,17 +187,21 @@ class DLTemplate:
     
     def set_val_data_loaders(self):
         self.train_val_loaders = []
-        self.val_loaders = []
+        self.val_loaders          = []
         for dataset_name in self.opt.dataset.split('_'):
             self.train_val_loaders.append(
                 (dataset_name, self.get_data_loader(self.opt, split='train', purpose='val', dataset_name=dataset_name))
             )
+
             self.log(f'Train set size for validation, dataset {dataset_name}: {len(self.train_val_loaders[-1][1])}')
+
             self.val_loaders.append(
                 (dataset_name, self.get_data_loader(self.opt, split='val',purpose='val', dataset_name=dataset_name))
             )
+
             self.log(f'Validation set size, dataset {dataset_name}: {len(self.val_loaders[-1][1])}')
 
+            
     def set_data_loaders(self):
         self.set_train_data_loaders()
         self.set_val_data_loaders()
