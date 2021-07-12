@@ -1,3 +1,7 @@
+#
+# Functions by Pau Marquez, UPC, 2021
+# File & small mods. by Ramon Morros, UPC, 2021
+#
 import torch
 import torch.functional as F
 
