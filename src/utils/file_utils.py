@@ -89,7 +89,7 @@ def store_unet_masks(trainer, loader, out_dir):
                 pickle.dump(unet_mask, fd)
 
                 
-def get_image_info(image_path, get_shape=False):
+def get_image_info(image_id, image_path, get_shape=False):
     '''
     Args:
         image_path (str): Path to the xml file containing the annotation of the image
