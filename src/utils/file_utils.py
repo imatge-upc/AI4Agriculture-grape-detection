@@ -88,17 +88,18 @@ def store_unet_masks(trainer, loader, out_dir):
                 pickle.dump(unet_mask, fd)
 
                 
-def get_image_info(labels_dir, image_id):
+def get_image_info(image_path, get_shape=False):
     '''
     Args:
-        labels_dir (str): Path to the xml files containing the annotations of the images 
-        image_id (str)  : Image id which forms the name of the xml file
-
+        image_path (str): Path to the xml file containing the annotation of the image
     Returns:
             Pandas.DataFrame: Dataframe containing the bounding boxes and the annotator of each bounding box
     '''
-    with open(os.path.join(labels_dir, f'{image_id}.xml'), 'rb') as fd:
+    with open(image_path, 'rb') as fd:
         xml_dict = xmltodict.parse(fd)
+
+    shape = xml_dict["annotation"]["size"].values()
+    
     if 'object' not in xml_dict["annotation"]:
         data=[]
     else:
@@ -106,4 +107,8 @@ def get_image_info(labels_dir, image_id):
     bboxes = pd.DataFrame(
         data,
         columns=['image_id','annotator', 'xmin', 'ymin', 'xmax', 'ymax']).astype(np.int)
+
+    if get_shape:
+        return bboxes, shape
+    
     return bboxes
