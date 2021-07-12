@@ -34,6 +34,14 @@ def create_masked_plot(image, mask, boxes):
     plt.show()
 
 
+def get_item(loader, image_id):
+    item     = loader.dataset[image_id]
+    data_d   = [item["image"]]
+    target_d = [item["target"]]
+
+    return data_d, target_d
+
+
 def general_plot (image_id, results_dir, faster_trainer=None, title="", loader=None, positive_mask_color='red', one_plot=False, lim_dict=None, out_dir=None):
     
     if loader is None:
