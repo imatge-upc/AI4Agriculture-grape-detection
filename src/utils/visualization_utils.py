@@ -28,9 +28,10 @@ def display_image_w_bbox(im, bboxes, annotators = None, colors_annotators = ['bl
 
         if len(bbox) == 6: # image_id, annotator, bbox
             bbox = bbox[2:]
-        if len(bbox) == 5: # image_id, bbox
+        elif len(bbox) == 5: # image_id, bbox
             bbox = bbox[1:]
-            
+
+        print (bbox)
         rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2]-bbox[0], bbox[3]-bbox[1], linewidth=1, edgecolor=colors_annotators[annotator], facecolor='none')
         
         ax.add_patch(rect)
