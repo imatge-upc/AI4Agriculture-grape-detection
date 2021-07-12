@@ -39,6 +39,6 @@ tifffile==2021.7.2
 torch==1.9.0
 torchvision==0.10.0
 typing-extensions==3.10.0.0
-urllib3==1.26.6
+urllib3==1.26.5
 wandb==0.10.33
 xmltodict==0.12.0
