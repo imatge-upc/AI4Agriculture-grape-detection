@@ -12,6 +12,20 @@ from skimage import measure
 import pydensecrf.densecrf as dcrf
 
 
+def bbox_intersect(a, b):
+    x1 = max(a[0], b[0])
+    y1 = max(a[1], b[1])
+    x2 = min(a[2], b[2])
+    y2 = min(a[3], b[3])
+
+    if x2 <= x1 or y2 <= y1 : return (0, 0, 0, 0) # None
+
+    return (x1, y1, x2, y2)
+
+def bbox_area(a):
+    return (a[2] - a[0]) * (a[3] - a[1])
+
+
 def crf_post_process(img, probs, H: int, W: int) -> None:
     K = 2 # Number of classes
     #assert img.shape == (H, W, 3), "wrong image shape"
