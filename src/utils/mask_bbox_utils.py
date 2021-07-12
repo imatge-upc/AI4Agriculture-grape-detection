@@ -39,11 +39,11 @@ def crf_post_process(img, probs, H: int, W: int) -> None:
 def apply_nms(results, nms_threshold):
     nms_idx = [torch.ops.torchvision.nms(r["boxes"], r["scores"], nms_threshold) for r in results]
     results_nms = [{
-                        **res,
-                        "boxes": res['boxes'][nms_idx[i]],
-                        "labels": res['labels'][nms_idx[i]],
-                        "scores": res['scores'][nms_idx[i]]
-                    } for i, res in enumerate(results)]
+        **res,
+        "boxes": res['boxes'][nms_idx[i]],
+        "labels": res['labels'][nms_idx[i]],
+        "scores": res['scores'][nms_idx[i]]
+    } for i, res in enumerate(results)]
     return results_nms
 
 
@@ -62,8 +62,7 @@ def get_all_faster_bboxes(trainer,loader):
             "faster_forward": get_faster_bboxes(trainer, data_d),
             "image_id": target_d[0]["image_id_str"]
         })
-        return results
-    })
+    return results
 
 def get_bbox_from_blob(blob):
     assert blob.dtype == np.bool
@@ -114,8 +113,8 @@ def get_matching_bboxes(gt_boxes, pred_boxes, lower_iou_thresh=0.0, upper_iou_th
     all_ious = box_iou(gt_boxes, pred_boxes)
     if not find_gt_boxes:
         all_ious = all_ious.permute(1,0)
-        unmatched_idxs = [i for i, ious in enumerate(all_ious) if (ious.max() <= upper_iou_thresh) & (ious.max() >= lower_iou_thresh)]
-        return gt_boxes[unmatched_idxs] if find_gt_boxes else pred_boxes[unmatched_idxs]
+    unmatched_idxs = [i for i, ious in enumerate(all_ious) if (ious.max() <= upper_iou_thresh) & (ious.max() >= lower_iou_thresh)]
+    return gt_boxes[unmatched_idxs] if find_gt_boxes else pred_boxes[unmatched_idxs]
 
 
     # EXTRACT FASTER RCNN INFERENCES TO JSON
