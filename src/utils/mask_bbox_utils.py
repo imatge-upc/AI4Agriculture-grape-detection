@@ -25,6 +25,18 @@ def bbox_intersect(a, b):
 def bbox_area(a):
     return (a[2] - a[0]) * (a[3] - a[1])
 
+def bbox_IoU(a, b, return_area_a=False):
+    inter  = bbox_area(bbox_intersect(a, b))
+    area_a = bbox_area(a)
+    area_b = bbox_area(b)
+    if area_a == 0 or area_b == 0:
+        iou = 1
+    else:
+        iou = inter / (area_a + area_b - inter)
+    if return_area_a:
+        return iou, area_a
+    else:
+        return iou
 
 def crf_post_process(img, probs, H: int, W: int) -> None:
     K = 2 # Number of classes
@@ -100,6 +112,32 @@ def add_mask(mask, boxes, fill_value=1):
     for box in boxes:
         mask[int(box[1]):int(box[3]), int(box[0]):int(box[2])] = fill_value
 
+
+def get_masks_from_boxes(results_boxes, target_boxes):
+    all_boxes = np.concatenate([results_boxes, target_boxes])
+
+    width, height = all_boxes.max(0)[[2,3]]
+
+    pred_mask   = np.zeros((height, width))
+    target_mask = np.zeros((height, width))
+    add_mask(pred_mask,   results_boxes)
+    add_mask(target_mask, target_boxes)
+
+    return pred_mask, target_mask
+
+def get_metrics_from_masks(pred_mask, target_mask):
+    tp = np.sum(pred_mask * target_mask)
+    fp = np.sum(pred_mask * (1-target_mask))
+    recall    = tp/target_mask.sum()
+    precision = tp/(tp+fp)
+    f1_score  = hmean([recall, precision])
+    return recall, precision, f1_score
+
+def get_mask_metrics(results, target):
+    pred_mask, target_mask = get_masks_from_boxes(results, target)
+    return get_metrics_from_masks(pred_mask, target_mask)
+
+        
 def get_mask(image, boxes):
     #item = loader.dataset[image_id]
     #image = item["image"]
@@ -110,7 +148,7 @@ def get_mask(image, boxes):
         
 # use get_matching_boxes() instead
 def get_wrong_bboxes(gt, pred, lower_iou_thresh=0.0, upper_iou_thresh=1.0):
-    all_ious = box_iou(gt['boxes'], pred['boxes'])
+    all_ious            = box_iou(gt['boxes'], pred['boxes'])
     not_matched_idxs    = [i for i, ious in enumerate(all_ious) if ious.max() < lower_iou_thresh]
     almost_matched_idxs = [i for i, ious in enumerate(all_ious) if (ious.max() >= lower_iou_thresh) & (ious.max() < upper_iou_thresh)]
     matched_idxs        = [i for i, ious in enumerate(all_ious) if ious.max() >= upper_iou_thresh]
@@ -126,10 +164,14 @@ def get_matching_bboxes(gt_boxes, pred_boxes, lower_iou_thresh=0.0, upper_iou_th
     iou thresholds are matched with a ground truth bounding box.
     """
     assert lower_iou_thresh <= upper_iou_thresh
+
     all_ious = box_iou(gt_boxes, pred_boxes)
+
     if not find_gt_boxes:
         all_ious = all_ious.permute(1,0)
+
     unmatched_idxs = [i for i, ious in enumerate(all_ious) if (ious.max() <= upper_iou_thresh) & (ious.max() >= lower_iou_thresh)]
+
     return gt_boxes[unmatched_idxs] if find_gt_boxes else pred_boxes[unmatched_idxs]
 
 
