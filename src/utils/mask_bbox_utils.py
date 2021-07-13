@@ -14,6 +14,10 @@ import pydensecrf.densecrf as dcrf
 from scipy.stats import hmean
 
 
+def get_aspect_ratio(bbox):
+    # Defined as torchivision -> height/width
+    return (bbox[3] - bbox[1])/ (bbox[2] - bbox[0])
+
 def bbox_intersect(a, b):
     x1 = max(a[0], b[0])
     y1 = max(a[1], b[1])
