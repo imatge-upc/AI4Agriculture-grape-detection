@@ -17,7 +17,7 @@ from .file_utils      import get_unet_mask_pkl
 from .mask_bbox_utils import get_faster_bboxes
 
 
-def display_image_w_bbox(im, bboxes, annotators = None, colors_annotators = ['blue','red','pink','brown','black','grey', 'white', 'yellow']):    
+def display_image_w_bbox(im, bboxes, annotators = None, colors_annotators = ['blue','red','pink','brown','black','grey', 'white', 'yellow'], line_width=1):
     if annotators is None:
         annotators = bboxes['annotator'].unique()
         
@@ -27,7 +27,7 @@ def display_image_w_bbox(im, bboxes, annotators = None, colors_annotators = ['bl
         annotator = bbox[1]
         bbox      = bbox[2:]
 
-        rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2]-bbox[0], bbox[3]-bbox[1], linewidth=1, edgecolor=colors_annotators[annotator], facecolor='none')
+        rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2]-bbox[0], bbox[3]-bbox[1], linewidth=line_width, edgecolor=colors_annotators[annotator], facecolor='none')
         
         ax.add_patch(rect)
     plt.title(f'(w, h) = ()')
