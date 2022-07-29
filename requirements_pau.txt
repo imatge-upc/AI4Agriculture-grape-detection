@@ -77,7 +77,7 @@ Markdown==3.3.4
 MarkupSafe==1.1.1
 matplotlib==3.3.4
 meld==3.18.0
-mistune==0.8.4
+mistune==2.0.3
 mmcv==1.2.6
 nbclassic==0.2.6
 nbclient==0.5.2
